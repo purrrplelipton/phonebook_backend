@@ -22,12 +22,6 @@ personRouter.post("/", (req, res, next) => {
   const person = new Person({
     name: req.body.name,
     number: req.body.number,
-    email: req.body.email,
-    address: req.body.address,
-    birthdate: req.body.birthdate,
-    gender: req.body.gender,
-    id: req.body.id,
-    date: new Date(),
   });
 
   person

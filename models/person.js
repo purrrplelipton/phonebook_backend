@@ -14,19 +14,12 @@ const personSchema = new mongoose.Schema({
     validate: {
       validator: (v) => {
         const cleanNum = v.replace(/\D/g, "").length >= 8,
-          checkHyphen = v.match(/\-/g).length === 1,
-          checkStart = /(?:^\+\d{2,3}\-\d{8}|^\d{2,3}\-\d{8})/.test(v);
-        return cleanNum && checkHyphen && checkStart;
+          checkNum = /(?:^\+\d{2,3}\-\d{7,}|^\d{2,3}\-\d{7,})/.test(v);
+        return cleanNum && checkNum;
       },
       message: (props) => `${props.value} is not a valid phone number`,
     },
   },
-  email: { type: String, unique: true },
-  address: { type: String },
-  birthdate: { type: String },
-  gender: { type: String },
-  id: { type: Number, unique: true },
-  date: { type: Date, required: true },
 });
 
 personSchema.set("toJSON", {
