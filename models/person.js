@@ -1,22 +1,29 @@
 const mongoose = require("mongoose");
 
+// mongoose.set("useFindAndModify", false);
+
+const url = process.env.MONGODB_URI;
+
+console.log("attempting connection to MongoDB");
+
+mongoose
+  .connect(url)
+  .then(() => console.log("connection established"))
+  .catch((error) => console.log("failed to connect to MongoDB", error));
+
 const personSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, "name is required"],
-    minLength: [3, "name is too short"],
+    required: true,
+    minLength: 3,
   },
   number: {
     type: String,
-    required: [true, "number is required"],
+    required: true,
     unique: true,
-    minLength: [8, "number too short"],
+    minLength: 8,
     validate: {
-      validator: (v) => {
-        const cleanNum = v.replace(/\D/g, "").length >= 8,
-          checkNum = /(?:^\+\d{2,3}\-\d{7,}|^\d{2,3}\-\d{7,})/.test(v);
-        return cleanNum && checkNum;
-      },
+      validator: (v) => /(?:^\+\d{2,3}\-\d{7,}|^\d{2,3}\-\d{7,})/.test(v),
       message: (props) => `${props.value} is not a valid phone number`,
     },
   },
