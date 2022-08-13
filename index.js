@@ -1,6 +1,4 @@
-if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config();
-}
+require("dotenv").config();
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -41,9 +39,11 @@ app.post("/api/persons", (req, res, nxt) => {
     const person = new Person({
       name: req.body.name,
       number: req.body.number,
+      date: new Date(),
+      id: req.body.id,
     });
 
-    person
+    return person
       .save()
       .then((savedPerson) => {
         res.json(savedPerson);
@@ -91,10 +91,10 @@ app.use(unknownEndpoint);
 const errorHandler = (err, req, res, nxt) => {
   console.error(err);
 
-  if (error.name === "CastError" && error.kind == "ObjectId") {
-    return response.status(400).send({ error: "malformatted id" });
-  } else if (error.name === "ValidationError") {
-    return response.status(400).json({ error: error.message });
+  if (err.name === "CastError") {
+    res.status(400).send({ error: "malformatted id" });
+  } else if (err.name === "ValidationError") {
+    res.status(400).json({ error: err.message });
   }
 
   nxt(err);

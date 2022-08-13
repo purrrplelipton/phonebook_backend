@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
 
-// mongoose.set("useFindAndModify", false);
-
 const url = process.env.MONGODB_URI;
 
 console.log("attempting connection to MongoDB");
@@ -15,22 +13,23 @@ const personSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    minLength: 3,
+    minLength: [3, "name is too short"],
   },
   number: {
     type: String,
     required: true,
     unique: true,
-    minLength: 8,
     validate: {
-      validator: (v) => /(?:^\+\d{2,3}\-\d{7,}|^\d{2,3}\-\d{7,})/.test(v),
-      message: (props) => `${props.value} is not a valid phone number`,
+      validator: (v) => /\d{2,3}\-\d{7,}/.test(v),
+      message: () => `invalid phone number format`,
     },
+    date: { type: Date, required: true },
+    id: { type: Number, required: true },
   },
 });
 
 personSchema.set("toJSON", {
-  transform: (document, returnedObject) => {
+  transform: (doc, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;

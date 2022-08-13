@@ -1,7 +1,0 @@
-PUT http://localhost:8888/api/users/2
-Content-Type: application/json
-
-{
-  "name": "tobi",
-  "number": "234-8087823890"
-}
