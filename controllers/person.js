@@ -19,35 +19,34 @@ personRouter.get("/:id", (req, res, next) => {
 });
 
 personRouter.post("/", (req, res, next) => {
-  const person = new Person({
-    name: req.body.name,
-    number: req.body.number,
-    email: req.body.email,
-    address: req.body.address,
-    birthdate: req.body.birthdate,
-    gender: req.body.gender,
-    id: req.body.id,
-    date: new Date(),
-  });
+  if (req.body) {
+    const person = new Person({
+      name: req.body.name,
+      number: req.body.number,
+      email: req.body.email,
+      address: req.body.address,
+      birthdate: req.body.birthdate,
+      gender: req.body.gender,
+      id: req.body.id,
+      date: new Date(),
+    });
 
-  person
-    .save()
-    .then((savedPerson) => {
-      res.json(savedPerson);
-    })
-    .catch((err) => next(err));
+    return person
+      .save()
+      .then((savedPerson) => {
+        res.json(savedPerson);
+      })
+      .catch((err) => next(err));
+  }
+  res.status(400).json({ error: "content missing" });
 });
 
 personRouter.get("/info", (req, res, next) => {
   Person.countDocuments((err, count) => {
-    if (err) {
-      next(err);
-    }
+    if (err) error(err.message);
 
-    res.send({
-      status: `phonebook has entries for ${count} people.
-      [${new Date()}].`,
-    });
+    res.send(`phonebook has entries for ${count} people.
+      [${new Date()}]`);
   });
 });
 
@@ -58,11 +57,26 @@ personRouter.delete("/:id", (req, res, next) => {
 });
 
 personRouter.put("/:id", (req, res, next) => {
-  const person = { number: req.body.number };
+  let prsnObj;
+  Person.findById(req.params.id)
+    .then((prsn) => (prsnObj = prsn))
+    .catch((err) => next(err));
 
-  const opts = { new: true, runValidators: true, context: "query" };
+  console.log(Object.keys(prsnObj));
 
-  Person.findByIdAndUpdate(req.params.id, person, opts)
+  const person = {
+    number: req.body.number,
+    email: req.body.email,
+    address: req.body.address,
+    birthdate: req.body.birthdate,
+    gender: req.body.gender,
+  };
+
+  Person.findByIdAndUpdate(req.params.id, person, {
+    new: true,
+    runValidators: true,
+    context: "query",
+  })
     .then((updatedPerson) => res.json(updatedPerson))
     .catch((err) => next(err));
 });

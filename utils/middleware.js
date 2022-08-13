@@ -17,11 +17,11 @@ const errHandler = (err, req, res, next) => {
   error(err.message);
 
   if (err.name === "CastError") {
-    return res.status(400).send({ error: "malformatted id" });
+    res.status(400).send({ error: "malformatted id" });
   } else if (err.message === "ValidationError") {
-    return res.status(400).json({ error: err.message });
+    res.status(400).json({ error: err.message });
   } else if (err.name === "MongoServerError" && err.code === 11000) {
-    return res.status(400).send({ error: "there was a duplicate key error" });
+    res.status(400).send({ error: err });
   }
 
   next(err);

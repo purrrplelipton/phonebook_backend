@@ -2,6 +2,7 @@ const { URI, PORT } = require("./utils/config");
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const bodyParser = require("body-parser");
 const personRouter = require("./controllers/person");
 const { reqLog, unknownEndpoint, errHandler } = require("./utils/middleware");
 const { info, error } = require("./utils/logger");
@@ -19,6 +20,7 @@ mongoose
 app.use(cors());
 app.use(express.static("build"));
 app.use(express.json());
+app.use(bodyParser.json());
 app.use(reqLog);
 
 app.use("/api/persons", personRouter);

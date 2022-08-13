@@ -10,15 +10,9 @@ const personSchema = new mongoose.Schema({
     type: String,
     required: [true, "number is required"],
     unique: true,
-    minLength: [8, "number too short"],
     validate: {
-      validator: (v) => {
-        const cleanNum = v.replace(/\D/g, "").length >= 8,
-          checkHyphen = v.match(/\-/g).length === 1,
-          checkStart = /(?:^\+\d{2,3}\-\d{8}|^\d{2,3}\-\d{8})/.test(v);
-        return cleanNum && checkHyphen && checkStart;
-      },
-      message: (props) => `${props.value} is not a valid phone number`,
+      validator: (v) => /\d{2,3}\-\d{7,8}/.test(v),
+      message: () => "invalid number format",
     },
   },
   email: { type: String, unique: true },
@@ -30,7 +24,7 @@ const personSchema = new mongoose.Schema({
 });
 
 personSchema.set("toJSON", {
-  transform: (document, returnedObject) => {
+  transform: (doc, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;
