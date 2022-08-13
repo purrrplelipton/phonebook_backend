@@ -20,8 +20,8 @@ const personSchema = new mongoose.Schema({
     required: true,
     unique: true,
     validate: {
-      validator: (v) => /\d{2,3}\-\d{7,}/.test(v),
-      message: () => `invalid phone number format`,
+      validator: (v) => /\d{2,3}-\d{7,}/.test(v),
+      message: () => "invalid phone number format",
     },
     date: { type: Date, required: true },
     id: { type: Number, required: true },

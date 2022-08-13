@@ -21,24 +21,23 @@ const Person = mongoose.model("Person", {
     type: String,
     required: [true, "number is required"],
     unique: true,
-    minLength: [8, "number too short"],
     validate: {
-      validator: (v) => /(?:^\+\d{2,3}\-\d{7,}|^\d{2,3}\-\d{7,})/.test(v),
-      message: (props) => `${props.value} is not a valid phone number`,
+      validator: (v) => /\d{2,3}-\d{7,8}/.test(v),
+      message: (args) => `${args.value} is not a valid phone number`,
     },
   },
 });
 
 const person = new Person({ name: process.argv[3], number: process.argv[4] });
 
-if (false) {
-  person.save().then((prsn) => {
+if (process.argv.length === 5) {
+  person.save().then(() => {
     console.log("contact saved");
     mongoose.connection.close();
   });
+} else if (process.argv.length === 3) {
+  Person.find({}).then((prsn) => {
+    prsn.forEach((p) => console.log(p));
+    mongoose.connection.close();
+  });
 }
-
-Person.find({}).then((prsn) => {
-  prsn.forEach((p) => console.log(p));
-  mongoose.connection.close();
-});

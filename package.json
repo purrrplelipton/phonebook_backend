@@ -8,8 +8,7 @@
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf build && cd ../phonebookApp_frontend && npm run build:ui",
-    "push:master": "git add . && git commit -am \"updated UI\" && git push origin master",
-    "push:testing": "git add . && git commit -m \"testing\" && git push origin err_tests",
+    "lint": "eslint .",
     "logs:prod": "heroku logs --tail"
   },
   "repository": {
@@ -36,6 +35,7 @@
     "react-router-dom": "^6.3.0"
   },
   "devDependencies": {
+    "eslint": "^8.21.0",
     "nodemon": "^2.0.15"
   }
 }
