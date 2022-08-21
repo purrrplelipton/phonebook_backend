@@ -1,14 +1,5 @@
 const mongoose = require("mongoose");
 
-const url = process.env.MONGODB_URI;
-
-console.log("attempting connection to MongoDB");
-
-mongoose
-  .connect(url)
-  .then(() => console.log("connection established"))
-  .catch((error) => console.log("failed to connect to MongoDB", error));
-
 const personSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -20,7 +11,7 @@ const personSchema = new mongoose.Schema({
     required: true,
     unique: true,
     validate: {
-      validator: (v) => /\d{2,3}-\d{7,}/.test(v),
+      validator: (v) => /\d{2,3}-\d{7,8}/.test(v),
       message: () => "invalid phone number format",
     },
     date: { type: Date, required: true },
