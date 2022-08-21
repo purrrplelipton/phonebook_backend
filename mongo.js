@@ -1,13 +1,7 @@
 const mongoose = require("mongoose");
 
-if (process.argv.length < 3) {
-  console.log("give password as an argument");
-  process.exit(1);
-}
-
 const password = process.argv[2];
-
-const url = `mongodb+srv://toby:${password}@cluster0.5az3h.mongodb.net/phonebookApp?retryWrites=true&w=majority`;
+const url = `mongodb+srv://fs-open_stuffs:${password}@fs-open.wnxlzmd.mongodb.net/phonebook-entries_db?retryWrites=true&w=majority`;
 
 mongoose.connect(url, { useNewUrlParser: true });
 
@@ -23,16 +17,19 @@ const Person = mongoose.model("Person", {
     unique: true,
     validate: {
       validator: (v) => /\d{2,3}-\d{7,8}/.test(v),
-      message: (args) => `${args.value} is not a valid phone number`,
+      message: (args) => `“${args.value}” is not a valid phone number`,
     },
   },
 });
 
 const person = new Person({ name: process.argv[3], number: process.argv[4] });
 
-if (process.argv.length === 5) {
+if (process.argv.length < 3) {
+  console.log("give password as an argument");
+  process.exit(1);
+} else if (process.argv.length === 5) {
   person.save().then(() => {
-    console.log("contact saved");
+    console.log(person.name, "info saved");
     mongoose.connection.close();
   });
 } else if (process.argv.length === 3) {
