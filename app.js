@@ -18,7 +18,7 @@ mongoose
   .then(() => info("connected to MongoDB"))
   .catch((err) => error("could not connect to MongoDB", err.message));
 
-app.use(cors);
+app.use(cors());
 app.use(express.static("build"));
 app.use(express.json());
 app.use(requestLogger);

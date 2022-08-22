@@ -1,10 +1,12 @@
 const personRouter = require("express").Router();
 const Person = require("../models/person");
 
-personRouter.get("/", (req, res) => {
-  Person.find({}).then((persons) => {
-    res.json(persons);
-  });
+personRouter.get("/", (req, res, nxt) => {
+  Person.find({})
+    .then((persons) => {
+      res.json(persons);
+    })
+    .catch((err) => nxt(err));
 });
 
 personRouter.get("/:id", (req, res, nxt) => {
@@ -37,32 +39,19 @@ personRouter.post("/", (req, res, nxt) => {
   res.status(400).json({ error: "content missing" });
 });
 
-personRouter.get("/info", (req, res, nxt) => {
-  Person.countDocuments((err, count) => {
-    if (err) {
-      nxt(err);
-    }
-
-    res.send({
-      status: `phonebook has entries for ${count} people.
-      [${new Date()}].`,
-    });
-  });
+personRouter.put("/:id", (req, res, nxt) => {
+  Person.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+    context: "query",
+  })
+    .then((updatedPerson) => res.json(updatedPerson))
+    .catch((err) => nxt(err));
 });
 
 personRouter.delete("/:id", (req, res, nxt) => {
   Person.findByIdAndDelete(req.params.id)
     .then(() => res.status(204).end())
-    .catch((err) => nxt(err));
-});
-
-personRouter.put("/:id", (req, res, nxt) => {
-  const person = { number: req.body.number };
-
-  const opts = { new: true, runValidators: true, context: "query" };
-
-  Person.findByIdAndUpdate(req.params.id, person, opts)
-    .then((updatedPerson) => res.json(updatedPerson))
     .catch((err) => nxt(err));
 });
 
